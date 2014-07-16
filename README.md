@@ -7,8 +7,8 @@ Bellow are some relevant points you might concern for this project:
 - Regarding the SPDY relevant leaning stuff, you can get the info [here](http://dev.chromium.org/spdy/spdy-whitepaper).
 - Regarding the OkHttp version, this project is based on [OkHttp 2.0.0 release](https://github.com/square/okhttp/releases/tag/parent-2.0.0) code.
 - Regarding why "okhttp-all-in-one", `package` all code in one `jar`, it's just convenient to client using.
-- Regarding the license, this project follows the same license with OkHttp, that is [Apache License, Version 2.0 ](https://github.com/hostinmars/spdymcsclient/blob/master/LICENSE).
-- Regarding the latest study of SPDY and mobile web service, it is a reference ["Towards a SPDY'ier mobile web?"](file:///C:/Users/HAIBO/Downloads/Towards%20a%20SPDY%E2%80%99ier%20Mobile%20Web.pdf). So you should know the limitation for mobile service SPDY refining definitely.
+- Regarding the license, this project follows the same license with OkHttp, [Apache License, Version 2.0 ](https://github.com/hostinmars/spdymcsclient/blob/master/LICENSE).
+- Regarding the latest study of SPDY and mobile web service, it is a reference ["Towards a SPDY'ier mobile web?"](http://dl.acm.org/citation.cfm?id=2535372.2535399&coll=DL&dl=GUIDE&CFID=512794707&CFTOKEN=71508233). So you should know the limitation of mobile service SPDY refining definitely.
 - And more study, [here](http://dl.acm.org/results.cfm?h=1&cfid=512794707&cftoken=71508233).
 <p>
 And we also contribute [this feature](https://github.com/square/okhttp/pull/985) to the OkHttp project.
