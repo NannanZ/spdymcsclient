@@ -2,7 +2,7 @@ SPDY MCS Client
 =============
 
 It's a SPDY based client of renren's mcs(Mobile Client Service) powered by [OkHttp Java library](https://github.com/square/okhttp)
-Bellow are some relevant points you might concern for this project:
+<br>Bellow are some relevant points you might concern for this project:
 - Regarding renren's mcs (Mobile Client Service), you can refer to this site [here](http://wiki.mobile.renren.com/en/).
 - Regarding the SPDY relevant leaning stuff, you can get the info [here](http://dev.chromium.org/spdy/spdy-whitepaper).
 - Regarding the OkHttp version, this project is based on [OkHttp 2.0.0 release](https://github.com/square/okhttp/releases/tag/parent-2.0.0) code.
@@ -11,8 +11,10 @@ Bellow are some relevant points you might concern for this project:
 - Regarding the latest study of SPDY and mobile web service, it is a reference ["Towards a SPDY'ier mobile web?"](http://dl.acm.org/citation.cfm?id=2535372.2535399&coll=DL&dl=GUIDE&CFID=512794707&CFTOKEN=71508233). So you should know the limitation of mobile service SPDY refining definitely.
 - And more study, [here](http://dl.acm.org/results.cfm?h=1&cfid=512794707&cftoken=71508233).
 <p>
-And we also contribute [this feature](https://github.com/square/okhttp/pull/985) to the OkHttp project.
-<br>We use this project for Android and desktop SPDY engine, for iOS platform, we use [CocoaSPDY](https://github.com/twitter/CocoaSPDY) as SPDY engine.
+
+
+We contribute [this feature](https://github.com/square/okhttp/pull/985) to the OkHttp project, too.
+<br>We use this project for Android and desktop SPDY client engine, for iOS platform, we use [CocoaSPDY](https://github.com/twitter/CocoaSPDY) as SPDY client engine.
 
 ### Meaning of this project
 The goals of this project are:
@@ -22,7 +24,7 @@ The goals of this project are:
 - Regarding viability, we proved it with benchmark code: `Benchmark1.java` and `Benchmark2.java`.
 
 Actually, The [SPDY](http://dev.chromium.org/spdy/spdy-whitepaper) is layered on top of the SSL, so the default implementation of OkHttp lib strictly follows the definition of SPDY and http2.
-Consider of the easier or more convenient way for some **old http** service refining with SPDY, and making the different mobile platforms(especially the Android and iOS) can access the same web service, so we invoked efforts on this project.
+<br>Consider of the easier or more convenient way for some **old http** service refining with SPDY, and making the different mobile platforms(especially the Android and iOS) can access the same web service, so we invoked efforts on this project.
 <p>
 ### The nginx proxy configuration for SPDY host
 It's a reference:
