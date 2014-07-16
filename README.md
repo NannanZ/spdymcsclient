@@ -21,10 +21,10 @@ The goals of this project are:
 - Try to test and verify the viability of above modification.
 - Regarding viability, we proved it with benchmark code: `Benchmark1.java` and `Benchmark2.java`.
 
-Actually, The [SPDY](http://dev.chromium.org/spdy/spdy-whitepaper) is layered on top of the SSL,<br> so the default implementation of OkHttp lib strictly follows the definition of SPDY and http2.
-Consider of the easier or more convenient way for some **old http** service refining with SPDY, and making the different mobile platforms(especially the Android and iOS) can access the same web service, so invoked efforts on this project.
+Actually, The [SPDY](http://dev.chromium.org/spdy/spdy-whitepaper) is layered on top of the SSL, so the default implementation of OkHttp lib strictly follows the definition of SPDY and http2.
+Consider of the easier or more convenient way for some **old http** service refining with SPDY, and making the different mobile platforms(especially the Android and iOS) can access the same web service, so we invoked efforts on this project.
 <p>
-## The nginx proxy configuration for SPDY host
+### The nginx proxy configuration for SPDY host
 It's a reference:
 ```
  server {
@@ -46,12 +46,11 @@ It's a reference:
 ```
 <p>
 
-<p>**NOTE**
+### NOTE
 >- When you set preferred SPDY protocol for **http** request, which means you also ignored the [npn or alpn](http://en.wikipedia.org/wiki/Next_Protocol_Negotiation) protocol negotiate feature.
 >- But for **https** request, the [npn or alpn](http://en.wikipedia.org/wiki/Next_Protocol_Negotiation) protocol negotiate feature has higher priority than preferred protocol.
 >- For more details, you can check the spdy-client code, especially the comments of App.java.
 
-------
 ### Compile and run
 - maven setting: It's a [reference](http://maven.oschina.net/help.html).
 - `cd okhttp-all-in-one` *and* `mvn clean package -U` *and* `mvn install`
