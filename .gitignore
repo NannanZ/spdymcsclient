@@ -1,4 +1,13 @@
 *.class
+target/
+.classpath
+.project
+.settings
+*/src/main/java/META-INF/
+*.log
+*.swp
+*.diff
+*.patch
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
