@@ -24,6 +24,7 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 import com.squareup.okhttp.Route;
@@ -31,6 +32,7 @@ import com.squareup.okhttp.internal.Dns;
 import com.squareup.okhttp.internal.Internal;
 import com.squareup.okhttp.internal.InternalCache;
 import com.squareup.okhttp.internal.Util;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CacheRequest;
@@ -43,9 +45,11 @@ import java.security.cert.CertificateException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocketFactory;
+
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -53,7 +57,6 @@ import okio.GzipSource;
 import okio.Okio;
 import okio.Sink;
 import okio.Source;
-
 import static com.squareup.okhttp.internal.Util.closeQuietly;
 import static com.squareup.okhttp.internal.Util.getDefaultPort;
 import static com.squareup.okhttp.internal.Util.getEffectivePort;
@@ -105,12 +108,12 @@ public final class HttpEngine {
     }
   };
 
-  final OkHttpClient client;
+  OkHttpClient client;
 
   private Connection connection;
   private RouteSelector routeSelector;
   private Route route;
-  private final Response priorResponse;
+  private Response priorResponse;
 
   private Transport transport;
 
@@ -129,13 +132,13 @@ public final class HttpEngine {
    * the content-length in advance and we can retransmit if necessary. The
    * upside of streaming is that we can save memory.
    */
-  public final boolean bufferRequestBody;
+  public boolean bufferRequestBody;
 
   /**
    * The original application-provided request. Never modified by OkHttp. When
    * follow-up requests are necessary, they are derived from this request.
    */
-  private final Request userRequest;
+  private Request userRequest;
 
   /**
    * The request to send on the network, or null for no network request. This is
@@ -190,6 +193,13 @@ public final class HttpEngine {
   public HttpEngine(OkHttpClient client, Request request, boolean bufferRequestBody,
       Connection connection, RouteSelector routeSelector, RetryableSink requestBodyOut,
       Response priorResponse) {
+    init(client, request, bufferRequestBody, connection, routeSelector,
+        requestBodyOut, priorResponse);
+  }
+
+  private void init(OkHttpClient client, Request request, boolean bufferRequestBody,
+      Connection connection, RouteSelector routeSelector, RetryableSink requestBodyOut,
+      Response priorResponse) {
     this.client = client;
     this.userRequest = request;
     this.bufferRequestBody = bufferRequestBody;
@@ -203,6 +213,99 @@ public final class HttpEngine {
       this.route = connection.getRoute();
     } else {
       this.route = null;
+    }
+
+    transport = null; sentRequestMillis = -1; transparentGzip = false;
+    networkRequest = null; cacheResponse = null; networkResponse = null;
+    userResponse = null; bufferedRequestBody = null; responseTransferSource = null;
+    responseBody = null; responseBodyBytes = null; storeRequest = null;
+    cacheStrategy = null;
+  }
+
+  /**
+   * This interface is defined for {@link HttpEngine#tryGetResponse tryGetResponse}.
+   * You can inject a <code>isCanceled</code> checker by implementing
+   * this cancellation indicatior interface. */
+  public interface ICancelIndicator {
+    public boolean isCanceled();
+  }
+
+  /**
+   * Retries and redirects to get the reponse from current http engine.
+   * May return null if this call was canceled.
+   * <p>The {@link ICancelIndicator indicator} will be injected to check if the caller
+   * attempts to cancel current transport of this engine.
+   * If set null means no need cancellation support.
+   */
+  public Response tryGetResponse(ICancelIndicator indicator) throws IOException {
+    int redirectionCount = 0;
+    // Copy body metadata to the appropriate request headers.
+    RequestBody body = userRequest.body();
+    if (body != null) {
+      Request.Builder requestBuilder = userRequest.newBuilder();
+
+      MediaType contentType = body.contentType();
+      if (contentType != null) {
+        requestBuilder.header("Content-Type", contentType.toString());
+      }
+
+      long contentLength = body.contentLength();
+      if (contentLength != -1) {
+        requestBuilder.header("Content-Length", Long.toString(contentLength));
+        requestBuilder.removeHeader("Transfer-Encoding");
+      } else {
+        requestBuilder.header("Transfer-Encoding", "chunked");
+        requestBuilder.removeHeader("Content-Length");
+      }
+
+      userRequest = requestBuilder.build();
+    } else if (HttpMethod.hasRequestBody(userRequest.method())) {
+      requestBodyOut = Util.emptySink();
+    }
+
+    while (true) {
+      if (indicator != null && indicator.isCanceled())
+        return null;
+      try {
+        sendRequest();
+
+        if (userRequest.body() != null) {
+          BufferedSink sink = getBufferedRequestBody();
+          userRequest.body().writeTo(sink);
+        }
+
+        readResponse();
+      } catch (IOException e) {
+        HttpEngine retryEngine = recover(e, null);
+        if (retryEngine != null) {
+          continue;
+        }
+
+        // Give up; recovery is not possible.
+        throw e;
+      }
+
+      Response response = getResponse();
+      Request followUp = followUpRequest();
+
+      if (followUp == null) {
+        releaseConnection();
+        return response.newBuilder().body(new RealResponseBody(response, getResponseBody()))
+            .build();
+      }
+
+      if (getResponse().isRedirect() && ++redirectionCount > MAX_REDIRECTS) {
+        releaseConnection();
+        throw new ProtocolException("Too many redirects: " + redirectionCount);
+      }
+
+      if (!sameConnection(followUp.url())) {
+        releaseConnection();
+      }
+
+      Connection connection = close();
+      userRequest = followUp;
+      init(client, userRequest, false, connection, null, null, response);
     }
   }
 
@@ -406,10 +509,10 @@ public final class HttpEngine {
         || !isRecoverable(e)
         || !canRetryRequestBody) {
         if (userRequest.preferredProtocol() != null) { // try to rule out the preferred
+            userRequest = userRequest.newBuilder().preferredProtocol(null).build();
             close();
-            Request request = userRequest.newBuilder().preferredProtocol(null).build();
-            return new HttpEngine(client, request, false, null, null,
-                    (RetryableSink) requestBodyOut, null);
+            init(client, userRequest, false, null, null, null,null);
+            return this;
         } else {
           return null;
         }
@@ -418,8 +521,9 @@ public final class HttpEngine {
     Connection connection = close();
 
     // For failure recovery, use the same route selector with a new connection.
-    return new HttpEngine(client, userRequest, bufferRequestBody, connection, routeSelector,
+    init(client, userRequest, bufferRequestBody, connection, routeSelector,
         (RetryableSink) requestBodyOut, priorResponse);
+    return this;
   }
 
   public HttpEngine recover(IOException e) {
@@ -905,5 +1009,31 @@ public final class HttpEngine {
     return url.getHost().equals(followUp.getHost())
         && getEffectivePort(url) == getEffectivePort(followUp)
         && url.getProtocol().equals(followUp.getProtocol());
+  }
+
+  private static class RealResponseBody extends ResponseBody {
+    private final Response response;
+    private final BufferedSource source;
+
+    RealResponseBody(Response response, BufferedSource source) {
+      this.response = response;
+      this.source = source;
+    }
+
+    @Override
+    public MediaType contentType() {
+      String contentType = response.header("Content-Type");
+      return contentType != null ? MediaType.parse(contentType) : null;
+    }
+
+    @Override
+    public long contentLength() {
+      return OkHeaders.contentLength(response);
+    }
+
+    @Override
+    public BufferedSource source() {
+      return source;
+    }
   }
 }

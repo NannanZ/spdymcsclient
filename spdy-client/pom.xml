@@ -4,12 +4,12 @@
 
 	<groupId>net.haibo</groupId>
 	<artifactId>spdy-client</artifactId>
-	<version>2.0.0</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>spdy-client</name>
-	<description>An HTTP+SPDY mcs client for Android and Java applications</description>
-	<url>https://github.com/square/okhttp</url>
+	<description>An HTTP+SPDY mcs Java client powered by OkHttp</description>
+	<url>https://github.com/hostinmars/spdymcsclient</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -108,7 +108,7 @@
       </plugins>
     </pluginManagement>
   </build>
-	
+
   <profiles>
     <profile>
       <id>npn-when-jdk7</id>
@@ -121,28 +121,28 @@
       <build>
         <pluginManagement>
           <plugins>
-			   <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-					<version>1.3</version>
-				<executions>
-				  <execution>
-					<goals>
-					  <goal>java</goal>
-					</goals>
-				  </execution>
-				</executions>
-				<configuration>
-				  <executable>java</executable>
-				  <arguments>
-					<argument>-Xms512m</argument>
-					<argument>-Xmx512m</argument>
-					<commandlineArgs>-Xbootclasspath/p:${bootclasspath}</commandlineArgs>
-					<argument>-classpath</argument>
-					<classpath />
-					<argument>net.haibo.spdy.client.App</argument>
-				  </arguments>
-				</configuration>
+              <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+                  <version>1.3</version>
+              <executions>
+                <execution>
+                  <goals>
+                     <goal>java</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                  <executable>java</executable>
+                  <arguments>
+                      <argument>-Xms512m</argument>
+                      <argument>-Xmx512m</argument>
+                      <commandlineArgs>-Xbootclasspath/p:${bootclasspath}</commandlineArgs>
+                      <argument>-classpath</argument>
+                      <classpath />
+                      <argument>net.haibo.spdy.client.App</argument>
+                  </arguments>
+              </configuration>
               <dependencies>
                 <dependency>
                   <groupId>org.mortbay.jetty.npn</groupId>
@@ -167,34 +167,34 @@
         <dependency>
           <groupId>org.mortbay.jetty.alpn</groupId>
           <artifactId>alpn-boot</artifactId>
-		   <version>${alpn.version}</version>
+          <version>${alpn.version}</version>
         </dependency>
       </dependencies>
       <build>
         <pluginManagement>
           <plugins>
-			   <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.3</version>
-				<executions>
-				  <execution>
-					<goals>
-					  <goal>java</goal>
-					</goals>
-				  </execution>
-				</executions>
-				<configuration>
-				  <executable>java</executable>
-				  <arguments>
-					<argument>-Xms512m</argument>
-					<argument>-Xmx512m</argument>
-					<commandlineArgs>-Xbootclasspath/p:${bootclasspath}</commandlineArgs>
-					<argument>-classpath</argument>
-					<classpath />
-					<argument>net.haibo.spdy.client.App</argument>
-				  </arguments>
-				</configuration>
+             <plugin>
+               <groupId>org.codehaus.mojo</groupId>
+               <artifactId>exec-maven-plugin</artifactId>
+               <version>1.3</version>
+               <executions>
+                 <execution>
+                 <goals>
+                   <goal>java</goal>
+                 </goals>
+               </execution>
+              </executions>
+              <configuration>
+                <executable>java</executable>
+                <arguments>
+                  <argument>-Xms512m</argument>
+                  <argument>-Xmx512m</argument>
+                  <commandlineArgs>-Xbootclasspath/p:${bootclasspath}</commandlineArgs>
+                  <argument>-classpath</argument>
+                  <classpath />
+                  <argument>net.haibo.spdy.client.App</argument>
+                </arguments>
+              </configuration>
               <dependencies>
                 <dependency>
                   <groupId>org.mortbay.jetty.alpn</groupId>
