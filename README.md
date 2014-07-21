@@ -14,6 +14,8 @@ It's a SPDY based client of renren's mcs(Mobile Client Service) powered by [OkHt
 
 
 We contribute [this feature](https://github.com/square/okhttp/pull/985) to the OkHttp project, too.
+<br>**NOTE:** According the review of [swankjesse](https://github.com/swankjesse) -the author of OkHttp, it doesn't make sense to include this feature to OkHttp,
+since the [HTTP 2](http://en.wikipedia.org/wiki/HTTP_2.0) has cancelled the plan of using TLS as one mandatory part.
 <br>We use this project for Android and desktop SPDY client engine, for iOS platform, we use [CocoaSPDY](https://github.com/twitter/CocoaSPDY) as SPDY client engine.
 
 ### Meaning of this project
