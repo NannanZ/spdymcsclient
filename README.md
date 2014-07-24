@@ -55,6 +55,12 @@ It's a reference:
 >- But for **https** request, the [npn or alpn](http://en.wikipedia.org/wiki/Next_Protocol_Negotiation) protocol negotiate feature has higher priority than preferred protocol.
 >- For more details, you can check the spdy-client code, especially the comments of App.java.
 
+### Protocol Decision
+In real project, you will need make choice for protocol using, and meet the question:
+>- What kind of protocol should be chosen and how it's suitable?
+Bellow figure shows us some suggestions, which comes from this study page, [here](https://www.usenix.org/conference/nsdi14/technical-sessions/wang).
+<br>![choose protocol](https://raw.githubusercontent.com/hostinmars/spdymcsclient/master/ext/tree.jpg)
+
 ### Compile and run
 - maven setting: It's a [reference](http://maven.oschina.net/help.html).
 - `cd okhttp-all-in-one` *and* `mvn clean package -U` *and* `mvn install`
