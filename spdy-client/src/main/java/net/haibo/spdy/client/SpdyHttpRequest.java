@@ -23,7 +23,6 @@ import com.squareup.okhttp.Response;
 
 
 /**
- * @author HAIBO
  * <p>It's an implementation of abstract http request using OkHttp's spdy http client.
  * 
  * Reference statement from OkHttpClient:
@@ -33,16 +32,18 @@ import com.squareup.okhttp.Response;
  * 
  * <p><strong>Reference you might need:</strong>
  * <ul>
- *      <li>{@link http://square.github.io/okhttp/ The OkHttp github address}</li>
- *      <li>{@linkplain https://httpbin.org/ A test host} </li>
+ *  <li>The <a href="http://square.github.io/okhttp/">OkHttp</a> Http Library.</li>
+ *  <li>The <a href="https://httpbin.org/">httpbin</a> http testing host.</li>
  * </ul>
  * 
  * <p><strong>Regarding certification file</strong>
  * <ul>
- *      <li>http://www.oschina.net/code/snippet_12_4092 and
- *      <li>http://wangrqa.blog.163.com/blog/static/17094682720133954149784/
+ *  <li>How to get the self-signed certification, check 
+ *  <a href="http://www.oschina.net/code/snippet_12_4092">here</a> and 
+ *  <a href="http://wangrqa.blog.163.com/blog/static/17094682720133954149784/">here</a>.
+ *  </li>
  * </ul>
- *  
+ * <p>
  * Actually we recommend you can set this in the initialization stage of overall applicaton,
  * like the main function is good choice.
  * 
@@ -52,7 +53,7 @@ import com.squareup.okhttp.Response;
  * will ignore the security check.
  *  
  */
-public class SpdyHttpRequest implements IHttpRequest {
+public class SpdyHttpRequest implements HttpRequest {
     private boolean isForcedSpdy = false;
     public SpdyHttpRequest forceSpdy() {
         this.isForcedSpdy = true;
@@ -122,7 +123,7 @@ public class SpdyHttpRequest implements IHttpRequest {
         return result;
     }
 
-    @Override public IHttpRequest accept(IRequestVisitor v) {
+    @Override public HttpRequest accept(RequestVisitor v) {
         v.visit(this); return this;
     }
 

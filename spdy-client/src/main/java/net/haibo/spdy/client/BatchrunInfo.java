@@ -14,16 +14,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 /**
- * 
- * @author HAIBO 
- * 
  * Definition of mcs batch run response info entity.
  * It will be deserialized as an object by passing the 
  * json string to the constructor.
- * 
+ * <p>
  * And it will never throw any exception during initialization, 
  * but you can check the validation through the 
- * <code>isValid</code> method after construction.
+ * {@linkplain BatchrunInfo#isValid()} method after construction.
  * 
  */
 public class BatchrunInfo {

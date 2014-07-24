@@ -24,14 +24,16 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 /**
- * @author HAIBO
  * It's an implementation of abstract http request using Apache http client.
- * 
- * Reference you might need:
- * http://hc.apache.org/httpcomponents-client-4.3.x/examples.html
- * https://httpbin.org/
+ * <p>
+ * Reference you might need: <br>
+ * <ul>
+ *  <li><a href="http://hc.apache.org/httpcomponents-client-4.3.x/examples.html" >
+ *  Apache http lib example</a> Got the usage help.</li>
+ *  <li><a href="http://httpbin.org/">httpbin</a> Got http testing host.</li>
+ * </ul>
  */
-public class ApacheHttpRequest implements IHttpRequest {
+public class ApacheHttpRequest implements HttpRequest {
     
     public static boolean allowInsecure = true;
     
@@ -110,7 +112,7 @@ public class ApacheHttpRequest implements IHttpRequest {
         }
     }
 
-    @Override public IHttpRequest accept(IRequestVisitor v) {
+    @Override public HttpRequest accept(RequestVisitor v) {
         v.visit(this);
         return this;
     }

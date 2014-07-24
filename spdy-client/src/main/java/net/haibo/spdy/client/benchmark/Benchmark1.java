@@ -10,16 +10,15 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import net.haibo.spdy.client.CONTEXT;
-import net.haibo.spdy.client.IHttpRequest;
-import net.haibo.spdy.client.IRequestVisitor;
+import net.haibo.spdy.client.HttpRequest;
+import net.haibo.spdy.client.RequestVisitor;
 import net.haibo.spdy.client.MCSClient;
 import net.haibo.spdy.client.SpdyHttpRequest;
 
 import com.google.caliper.Param;
 
 /**
- * @author HAIBO
- *
+ * Benchmark1
  */
 public class Benchmark1 {
     
@@ -73,8 +72,8 @@ public class Benchmark1 {
                 ++this.totalRequst;
                 client.execute();
                 // sampling the connection count through the visit interface
-                this.client.getRequest().accept(new IRequestVisitor() {
-                    @Override public void visit(IHttpRequest access) {
+                this.client.getRequest().accept(new RequestVisitor() {
+                    @Override public void visit(HttpRequest access) {
                         if (SpdyHttpRequest.class.isInstance(access)) {
                             SpdyHttpRequest req = (SpdyHttpRequest)access;
                             if (req.impl().getConnectionPool() != null) {
@@ -100,8 +99,8 @@ public class Benchmark1 {
 
         long reportEnd = System.nanoTime();
         
-        this.client.getRequest().accept(new IRequestVisitor() { // Stop the connection pool
-            @Override public void visit(IHttpRequest access) {
+        this.client.getRequest().accept(new RequestVisitor() { // Stop the connection pool
+            @Override public void visit(HttpRequest access) {
                 if (SpdyHttpRequest.class.isInstance(access)) {
                     SpdyHttpRequest req = (SpdyHttpRequest)access;
                     if (req.impl().getConnectionPool() != null) {

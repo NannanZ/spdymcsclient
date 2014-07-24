@@ -25,9 +25,8 @@ import com.squareup.okhttp.apache.OkApacheClient;
 
 /**
  * Hello MCS!
- *
  */
-public class App implements ICallback
+public class App implements MCSCallback
 {
 //    static Logger logger = Logger.getLogger("net.haibo.spdy.client.App");
     public static void main(String[] args)
@@ -139,7 +138,8 @@ public class App implements ICallback
 
     private static void sequenceSmokeTesting() throws Exception {
         LoginInfo login = UTILS.getLogin();
-        MCSClient feeds = UTILS.createDefaultFeedGet(TheRequest.Spdy, login, null, "http://118.186.217.31/api/");
+//        MCSClient feeds = UTILS.createDefaultFeedGet(TheRequest.Spdy, login, null, "http://118.186.217.31/api/");
+        MCSClient feeds = UTILS.createDefaultFeedGet(TheRequest.Spdy, login, null, "http://api.m.renren.com/api/");
         for (int i = 0; i < 20; ++i) {
             System.out.println(">>S"+i);
             feeds.execute();

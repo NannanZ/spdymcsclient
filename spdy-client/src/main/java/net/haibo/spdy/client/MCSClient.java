@@ -17,7 +17,7 @@ interface Executable {
 
 /** Mcs Batchrun is one kind of composited mcs client */
 abstract class IMcsBatchrun extends MCSClient {
-    public IMcsBatchrun(IHttpRequest http) {
+    public IMcsBatchrun(HttpRequest http) {
         super(http);
     }
 
@@ -25,16 +25,16 @@ abstract class IMcsBatchrun extends MCSClient {
 }
 
 /**
- * @author HAIBO
  * Define a http request client regarding the mcs api spec.
  * The real http request/reponse will be invoked by IHttpRequst
  * interface that's injected by the constructor.
- * 
+ * <p>
  * You can new a client object direclty with shared http rquest instance.
  * And also, you can inject the relevant http request implementation anytime
  * with through constructor function before call the execute or request method.
- * 
- * For <code>batchrun</code> method, whose logic also be ruled by the mcs api spec.
+ * <p>
+ * <h3>Regarding {@linkplain MCSClient#batchrun(HttpRequest)}</h3>
+ * <br>Whose logic also be ruled by the mcs api spec.
  * It's a static factory alike method, you can call this method without client
  * instance to create a batchrun instance, since batchrun class is compositor 
  * pattern class, so it provide the accept method to composite muli-clients in it, and 
@@ -43,13 +43,13 @@ abstract class IMcsBatchrun extends MCSClient {
 public class MCSClient implements Executable {
     private String endpoint;
     protected LoginInfo login;
-    private IHttpRequest http;
+    private HttpRequest http;
     private String method; // Mcs method,eg. feed.get
     private Map<String, String> queries;
     private List<File> files;
-    private ICallback cb;
+    private MCSCallback cb;
     
-    public MCSClient(IHttpRequest http) { 
+    public MCSClient(HttpRequest http) { 
         // Ensure it has a valid reference
         assert(http != null);
         this.http = http;
@@ -71,7 +71,7 @@ public class MCSClient implements Executable {
     public MCSClient withFiles(List<File> files) {
         this.files = files; return this;
     }
-    public MCSClient withCallback(ICallback c) {
+    public MCSClient withCallback(MCSCallback c) {
         this.cb = c; return this;
     }
     
@@ -84,15 +84,15 @@ public class MCSClient implements Executable {
     public Map<String, String> getQuery() {
         return queries;
     }
-    public ICallback getCallback() {
+    public MCSCallback getCallback() {
         return cb;
     }
-    public IHttpRequest getRequest() {
+    public HttpRequest getRequest() {
         return http;
     }
 
     /** The batch run logic is defined in the mcs api spec */
-    public static IMcsBatchrun batchrun(IHttpRequest http) {
+    public static IMcsBatchrun batchrun(HttpRequest http) {
         return new IMcsBatchrun(http) {
             @Override public String execute() throws Exception {
                 assert(cs != null);
@@ -204,7 +204,7 @@ public class MCSClient implements Executable {
         return response;
     }
     
-    public MCSClient copyWith(IHttpRequest http) {
+    public MCSClient copyWith(HttpRequest http) {
         return new MCSClient(http)
             .withCallback(this.cb)
             .withEndpoint(this.endpoint)

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 
 /**
- * @author HAIBO
- *
+ * Define a counted flyweight alike container.
+ * <br>It will returns max number of the created instance by iterate.
  */
 public class CountedFlyweight<T> {
     

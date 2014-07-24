@@ -47,7 +47,6 @@ import com.squareup.okhttp.ResponseBody;
 import net.haibo.spdy.client.CONTEXT.MockSetting;
 
 /**
- * @author HAIBO
  * The utility alike functions provided for internal call in this package.
  */
 public final class UTILS {
@@ -207,7 +206,7 @@ public final class UTILS {
     }
     
     /** Returns a mocked mcs client by using a mocked mcs method and mock setting */
-    public static MCSClient createDefaultMockedClient(LoginInfo login, ICallback cb,
+    public static MCSClient createDefaultMockedClient(LoginInfo login, MCSCallback cb,
             TheRequest request, String endpoint) {
         MockSetting setting = CONTEXT.DUMMY.mockSetting();
         Map<String, String> query = new HashMap<String, String>();
@@ -225,7 +224,7 @@ public final class UTILS {
         return cl;
     }
     
-    public static MCSClient createDefaultFeedGet(TheRequest request, LoginInfo login, ICallback cb, String endpoint) {
+    public static MCSClient createDefaultFeedGet(TheRequest request, LoginInfo login, MCSCallback cb, String endpoint) {
         // Use "feed.get" as the sample command
         Map<String, String> query = new HashMap<String, String>();
         query.put("type", "102,103,104,107,110,501,502,504,"
@@ -244,7 +243,7 @@ public final class UTILS {
     }
     
     public static MCSClient createDefaultUploadCase(TheRequest request,
-            LoginInfo login, ICallback cb, String endpoint, List<File> files) {
+            LoginInfo login, MCSCallback cb, String endpoint, List<File> files) {
         // Use "photos.uploadbin" as the sample command
         String method = "photos.uploadbin";
 
@@ -262,7 +261,7 @@ public final class UTILS {
     public static LoginInfo getLogin() throws Exception {
         // For Login
         String url = CONTEXT.API_ENDPOINT;
-        IHttpRequest req = TheRequest.Apache.create();
+        HttpRequest req = TheRequest.Apache.create();
 
         CONTEXT.UserInfo info = CONTEXT.DUMMY.account();
         return new MCSClient(req).withEndpoint(url).login(info.userName, info.password);

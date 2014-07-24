@@ -20,8 +20,8 @@ import javax.net.ssl.SSLSession;
 
 import net.haibo.spdy.client.CONTEXT;
 import net.haibo.spdy.client.CountedFlyweight;
-import net.haibo.spdy.client.IHttpRequest;
-import net.haibo.spdy.client.IRequestVisitor;
+import net.haibo.spdy.client.HttpRequest;
+import net.haibo.spdy.client.RequestVisitor;
 import net.haibo.spdy.client.MCSClient;
 import net.haibo.spdy.client.SpdyHttpRequest;
 import net.haibo.spdy.client.TheRequest;
@@ -29,8 +29,7 @@ import net.haibo.spdy.client.TheRequest;
 import com.google.caliper.Param;
 
 /**
- * @author HAIBO
- *
+ * Benchmark2
  */
 public class Benchmark2 {
     
@@ -74,8 +73,8 @@ public class Benchmark2 {
                     new CountedFlyweight.Creatable<MCSClient>() {
                 @Override public MCSClient create() {
                     return Benchmark2.this.client.copyWith(
-                            Benchmark2.this.reqKind.create().accept(new IRequestVisitor() {
-                        @Override public void visit(IHttpRequest access) {
+                            Benchmark2.this.reqKind.create().accept(new RequestVisitor() {
+                        @Override public void visit(HttpRequest access) {
                             if (SpdyHttpRequest.class.isInstance(access)) {
                                 SpdyHttpRequest req = (SpdyHttpRequest)access;
                                 // Note: It's a workaround to customizing a client 
@@ -162,8 +161,8 @@ public class Benchmark2 {
                 requestRoundCount++;
             }
             
-            this.client.getRequest().accept(new IRequestVisitor() { // dump the connection pool status
-                @Override public void visit(IHttpRequest target) {
+            this.client.getRequest().accept(new RequestVisitor() { // dump the connection pool status
+                @Override public void visit(HttpRequest target) {
                     if (SpdyHttpRequest.class.isInstance(target)) {
                         SpdyHttpRequest req = (SpdyHttpRequest)target;
                         if (req.impl().getConnectionPool() != null) {
@@ -189,8 +188,8 @@ public class Benchmark2 {
             sleep(1);
         }
         long end = System.nanoTime();
-        this.client.getRequest().accept(new IRequestVisitor() { // Stop the connection pool
-            @Override public void visit(IHttpRequest access) {
+        this.client.getRequest().accept(new RequestVisitor() { // Stop the connection pool
+            @Override public void visit(HttpRequest access) {
                 if (SpdyHttpRequest.class.isInstance(access)) {
                     SpdyHttpRequest req = (SpdyHttpRequest)access;
                     if (req.impl().getConnectionPool() != null) {

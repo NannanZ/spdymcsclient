@@ -16,10 +16,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author HAIBO
+ * <p>It's the testing entry class and in this class, 
+ * we defined four kinds of testing scenario.<br>
+ * <ol>
+ *  <li>{@linkplain OKHttp_Spdy_request_mcs_mulit_times} means counted testing the http 
+ *  request one by one with OkHttp Http lib.
+ *  <li>{@linkplain OkHttp_Http_request_mcs_mulit_times} means counted testing the http
+ *  request one by one with Apache Http lib
+ *  <li>{@linkplain OkHttp_Spdy_request_mcs_compress_muti_channels_compress} means compress
+ *  testing the http requests parallelly with OkHttp Http lib.
+ *  <li>{@linkplain OkHttp_Http_request_mcs_compress_muti_channels_compress} means compress
+ *  testing the http requests parallelly with Apache Http lib.
+ * </ol>
  *
  */
-public final class BenchmarkTest implements ICallback {
+public final class BenchmarkTest implements MCSCallback {
     Logger logger = null;
 
     LoginInfo login = null;

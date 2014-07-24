@@ -8,16 +8,13 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * 
- * @author HAIBO 
- * 
  * Definition of login certification info entity.
  * It will be deserialized as an object by passing the 
  * json string to the constructor.
  * 
  * And it will never throw any exception during initialization, 
  * but you can check the validation through the 
- * <code>isValid</code> method after construction.
+ * {@linkplain LoginInfo#isValid()} method after construction.
  * 
  */
 public class LoginInfo {
